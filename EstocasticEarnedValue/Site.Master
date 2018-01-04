@@ -1,0 +1,142 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="StochasticEarnedValue.SiteMaster" %>
+
+<%@ Register TagPrefix="ajax" Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head id="Head1" runat="server">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=9" />
+    <title>Universidad de Burgos</title>
+    <asp:PlaceHolder ID="PlaceHolder1" runat="server">
+        <%: Scripts.Render("~/bundles/modernizr") %>
+    </asp:PlaceHolder>
+    <webopt:BundleReference ID="BundleReference1" runat="server" Path="~/Content/css" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width" />
+    <asp:ContentPlaceHolder runat="server" ID="HeadContent" />
+
+</head>
+<body>
+    <form id="Form1" runat="server">
+
+        <asp:ScriptManager ID="ScriptManager1" runat="server">
+            <Scripts>
+                <%--To learn more about bundling scripts in ScriptManager see http://go.microsoft.com/fwlink/?LinkID=272931&clcid=0x409 --%>
+                <%--Framework Scripts--%>
+                <asp:ScriptReference Name="jquery" />
+                <asp:ScriptReference Name="jquery.ui.combined" />
+                <%--Site Scripts--%>
+            </Scripts>
+        </asp:ScriptManager>
+
+        <header>
+            <div class="header-util">
+                <table style="width: 98%; text-align: left;">
+                    <tr>
+                        <td style="width:35px; padding-left:20px">
+                            <asp:Image ID="imgUser" runat="server" Width="20" Height="20" ImageUrl="~/Images/user.png" Visible="false" />
+                        </td>
+                        <td style="width: 365px; padding-left: 10px">
+                            <asp:Label ID="lblDisplayName" runat="server"></asp:Label><br />
+                        </td>
+                        <td></td>
+                        <td style="width: 150px">
+                            <asp:HyperLink ID="btnEnglish" runat="server" CssClass="header-link-button-text" Text="<%$ Resources: WebResources, INGLES %>" />
+                            <asp:Label ID="Label1" runat="server" CssClass="header_language" Text="/" />
+                            <asp:HyperLink ID="btnEspanol" runat="server" CssClass="header-link-button-text" Text="<%$ Resources: WebResources, ESPAÑOL %>" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <table class="header">
+                <tr>
+                    <td style="width: 200px; text-align: center; background: black;">
+                        <asp:Image ID="imgUBU" runat="server" ImageUrl="~/Images/LogoUBU.png"  CssClass="UBUImage" />
+
+                    </td>
+                    <td style="text-align: center;">
+                        <asp:Label ID="Label3" runat="server" CssClass="header-titulo-lb" Text="<%$ Resources: WebResources, APP_TITLE %>" />
+                </tr>
+            </table>
+
+        </header>
+        <div id="body">
+            <div id="content">
+                <asp:ContentPlaceHolder runat="server" ID="FeaturedContent" />
+                <asp:ContentPlaceHolder runat="server" ID="FilterContent" />
+                <section class="content-wrapper main-content clear-fix">
+                    <!-- Validation Summary -->
+                    <asp:UpdatePanel ID="upnValidationSummary" runat="server" UpdateMode="Always">
+                        <ContentTemplate>
+                            <%--<core:validationsummary id="ValidationSummary" runat="server"
+                                displaymode="BulletList" validationgroup="Submit" />--%>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
+
+                    <asp:ContentPlaceHolder runat="server" ID="MainContent" />
+                    <ajax:modalpopupextender id="ModalProgress" runat="server"
+                        targetcontrolid="panelUpdateProgress"
+                        backgroundcssclass="backgroundModalPanel"
+                        popupcontrolid="panelUpdateProgress"
+                        dropshadow="true" />
+                    <asp:Panel ID="panelUpdateProgress" runat="server">
+                        <asp:UpdateProgress ID="UpdateProgressBar" DisplayAfter="500" runat="server">
+                            <ProgressTemplate>
+                                <table class="waitingPanel">
+                                    <tr>
+                                        <td>
+                                            <asp:Image ID="Image1" runat="server" ImageUrl="~/Images/progressbar.gif" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </ProgressTemplate>
+                        </asp:UpdateProgress>
+                    </asp:Panel>
+                </section>
+            </div>
+        </div>
+        <%-- <footer>
+            <div class="content-wrapper">
+                <div class="float-left">
+                    <p>&copy; <%: DateTime.Now.Year %> - Grupo Antolín</p>
+                </div>
+            </div>
+        </footer> --%>
+
+        <script type="text/javascript">
+
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+
+            //Raised before processing of an asynchronous postback starts and the postback request is sent to the server.
+            prm.add_beginRequest(BeginRequestHandler);
+
+            // Raised after an asynchronous postback is finished and control has been returned to the browser.
+            prm.add_endRequest(EndRequestHandler);
+
+            //------------------------------------------------------
+            // Petición a servidor lanzada
+            //------------------------------------------------------
+            function BeginRequestHandler(sender, args) {
+                //Shows the modal popup - the update progress
+                var popup = $find('<%= ModalProgress.ClientID %>');
+                 if (popup != null) {
+                     popup.show();
+                 }
+             }
+
+             //------------------------------------------------------
+             // Petición a servidor finalizada
+             //------------------------------------------------------
+             function EndRequestHandler(sender, args) {
+
+                 //Hide the modal popup - the update progress
+                 var popup = $find('<%= ModalProgress.ClientID %>');
+                if (popup != null) {
+                    popup.hide();
+                }
+            }
+        </script>
+    </form>
+</body>
+</html>
